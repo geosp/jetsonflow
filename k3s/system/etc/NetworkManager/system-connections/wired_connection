@@ -1,0 +1,6 @@
+# cat /sys/class/net/eth0/address
+[ipv4]
+address1=192.168.1.9/24,192.168.1.1
+dns=192.168.1.2;
+dns-search=mixwarecs.local;
+method=manual

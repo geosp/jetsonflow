@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: jupyter-notebook 
+  name: jupyter-notebook 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: jupyter-notebook 
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: jupyter-notebook 
+    spec:
+      containers:
+        - command: ["jupyter-lab"]
+          args: ["--allow-root", "--no-browser", "--ip", "0.0.0.0", "--NotebookApp.notebook_dir=/var/work", "--NotebookApp.password=sha1:93ba4185c3ff:2e8d91be9948b031157fffc54d8b6bc7b123fe4a"]
+          image: 192.168.1.153:5000/jetson-jupyter-tensorflow:v1
+          imagePullPolicy: Always 
+          name: jupyter-notebook 
+          ports:
+            - containerPort: 8888
+            - containerPort: 6006
+          volumeMounts:
+            - mountPath: /var/work
+              name: jupyter-data-pv-claim
+      restartPolicy: Always
+      volumes:
+        - name: jupyter-data-pv-claim
+          persistentVolumeClaim:
+            claimName: jupyter-data-pv-claim 
+      nodeSelector:
+        kubernetes.io/hostname: jetson03
